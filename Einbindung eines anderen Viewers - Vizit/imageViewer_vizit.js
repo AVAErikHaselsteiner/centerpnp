@@ -36,7 +36,42 @@ var Template_imageViewer_vizit = (function (_super) {
                         Vizit.Essential.Manager.Open("centerVizit", itemObject);
                         
                         // Der Vizit Viewer wird standardmäßig mit einem für das center zu geringem z-Index dargestellt
-                        $(".x-panel").css({ zIndex: 10});
+                        $(".x-panel").css({ zIndex: 10 });
+
+                        // um den Viewer zu beenden, wenn eine Unterstruktur ausgewählt wird (z.B. Eingangsrechnung --> WF-Protokoll)
+                        $(".k-tabstrip-items > li").each(function () {
+                            $(this).on("click", function () {
+                                Vizit.Essential.Manager.Clear();
+                            });
+                        });
+                        // END
+
+                        // um den Viewer zu beenden, wenn man sich in der Ordner-Ansicht befindet
+                        if ($(".folderContentInner").length) {
+                            // linke Navigations-Links
+                            $(".folderPlan > div").each(function () {
+                                if ($(this).hasClass("folder")) {
+                                    if (!$(this).hasClass("active")) {
+                                        $(this).on("click", function () {
+                                            Vizit.Essential.Manager.Clear();
+                                        });
+                                    }
+                                } else {
+                                    // Aktendeckel hat ander Funktionalität
+                                    $(".text", this).on("click", function () {
+                                        Vizit.Essential.Manager.Clear();
+                                    });
+                                }
+                            });
+
+                            // History
+                            $(".historyInner > .outer > .inner > div").each(function () {
+                                $(this).on("click", function () {
+                                    Vizit.Essential.Manager.Clear();
+                                });
+                            });
+                        }
+                        // END
                     
                         dfd.resolve();
                     }
